@@ -1,0 +1,73 @@
+[tool.black]
+line-length = 79
+target-version = ["py314"]
+
+[tool.ruff]
+target-version = "py314"
+
+[tool.pytest.ini_options]
+minversion = "7.2.0"
+addopts = """
+    -vv
+    -s
+    --log-cli-level=DEBUG
+"""
+testpaths = "tests/"
+markers = [
+]
+norecursedirs = [
+]
+asyncio_mode = "auto"
+asyncio_debug = "false"
+asyncio_default_fixture_loop_scope = "session"
+
+
+[tool.isort]
+atomic = true
+line_length = 79
+lines_after_imports = 2
+lines_between_types = 1
+profile = "black"
+use_parentheses = true
+balanced_wrapping = true
+include_trailing_comma = true
+multi_line_output = 3
+known_third_party = [
+    "pytest",
+]
+known_first_party = [
+]
+
+[tool.mypy]
+allow_redefinition = false
+check_untyped_defs = true
+ignore_errors = false
+ignore_missing_imports = true
+implicit_reexport = false
+local_partial_types = true
+no_implicit_optional = true
+strict_equality = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+namespace_packages = true
+explicit_package_bases = true
+
+[project]
+name = "python-concurrency-asyncio"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "zhukovgreen", email = "iam@zhukovgreen.pro"},
+]
+dependencies = ["pytest-asyncio>=1.2.0", "pytest-sugar>=1.1.1"]
+requires-python = "==3.14.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false

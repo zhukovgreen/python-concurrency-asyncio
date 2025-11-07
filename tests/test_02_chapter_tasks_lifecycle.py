@@ -120,6 +120,7 @@ async def test_how_to_handle_tasks_cancellation_solution_1():
         name="parent",
     )
     await asyncio.sleep(0)
+    asyncio.print_call_graph(parent_task)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task
@@ -162,6 +163,7 @@ async def test_how_to_handle_tasks_cancellation_solution_2():
         name="parent",
     )
     await asyncio.sleep(0)
+    asyncio.print_call_graph(parent_task)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task
@@ -206,6 +208,7 @@ async def test_how_to_handle_tasks_cancellation_solution_3():
         name="parent",
     )
     await asyncio.sleep(0)
+    asyncio.print_call_graph(parent_task)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task

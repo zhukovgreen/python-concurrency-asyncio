@@ -10,6 +10,10 @@ Main definitions:
 - task: A wrapper around a coroutine that schedules it to run on the event loop
 - await: Keyword that suspends coroutine execution until the awaited operation
   completes
+
+Special things needed to know to understand the material:
+- asyncio.sleep(num_seconds) represents asyncio tasks which finished in a
+specified number of seconds
 """
 
 import asyncio
@@ -100,7 +104,8 @@ async def test_event_loop_creation_recommended_way():
         # this is the program entrypoint coro
         async def main():
             print("Creating and running my asyncio tasks")
-            await asyncio.sleep(1)
+            # imitating OS I/O fd waiting (IMPORTANT TO UNDERSTAND!!!)
+            await asyncio.sleep(0)
             print("Program completed")
             loop = asyncio.get_running_loop()
             assert loop

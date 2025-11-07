@@ -176,6 +176,14 @@ async def test_how_to_handle_tasks_cancellation_solution_2():
 
 
 async def test_how_to_handle_tasks_cancellation_solution_3():
+    """
+
+    - failure of one child leads to cancellation of all siblings and also
+    parent task
+    - signal handling
+    - Exception group is used for exception reporting
+    - Special support of SIGTERM and SystemExit
+    """
     async def child():
         # raise ValueError()
         try:

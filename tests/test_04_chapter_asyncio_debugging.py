@@ -1,6 +1,10 @@
 # language=markdown
 """
-# Chapter 4: Debugging asyncio application
+# Chapter 4: Demo and Debugging asyncio application
+
+- Demo mother-cat design (with all our knowledge)
+- Demo example from Ramu code
+- Demo example from Leah code
 
 ## Debug Mode Enablement
 

@@ -197,6 +197,7 @@ async def test_tasks_vs_coroutine():
 
     async def main():
         task_b = asyncio.create_task(coro_b())
+
         num_repeats = 3
         for _ in range(num_repeats):
             await coro_a()
@@ -209,7 +210,7 @@ async def test_tasks_vs_coroutine():
 async def test_tasks_loop_execution():
     async def coro_a():
         print("I am coro_a(). Hi!")
-        await asyncio.sleep(5)
+        await asyncio.sleep(1)
         print("I am coro_a(). Hi again!")
 
     async def coro_b():
@@ -226,6 +227,6 @@ async def test_tasks_loop_execution():
             asyncio.create_task(coro_a())
 
     await main()
-    await asyncio.sleep(1)
-    # await asyncio.sleep(10)
+    await asyncio.sleep(0)
+    # await asyncio.sleep(1)
     # t = asyncio.create_task(bad_task())

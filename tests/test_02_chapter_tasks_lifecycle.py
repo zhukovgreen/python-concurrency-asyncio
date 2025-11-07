@@ -56,7 +56,7 @@ async def test_parent_task_cancellation_exception_not_raised():
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0.1)
+    await asyncio.sleep(0)
     await parent_task
 
 
@@ -77,7 +77,7 @@ async def test_parent_task_cancelled_childs_are_running():
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0.2)
+    await asyncio.sleep(0)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task
@@ -92,6 +92,7 @@ async def test_parent_task_cancelled_childs_are_running():
 
 async def test_how_to_handle_tasks_cancellation_solution_1():
     async def child():
+        # raise ValueError()
         try:
             await asyncio.sleep(5)
         except asyncio.CancelledError:
@@ -118,7 +119,7 @@ async def test_how_to_handle_tasks_cancellation_solution_1():
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0.2)
+    await asyncio.sleep(0)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task
@@ -160,7 +161,7 @@ async def test_how_to_handle_tasks_cancellation_solution_2():
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0.2)
+    await asyncio.sleep(0)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task
@@ -196,7 +197,7 @@ async def test_how_to_handle_tasks_cancellation_solution_3():
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0.2)
+    await asyncio.sleep(0)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task

@@ -7,6 +7,23 @@ the controlflow in the concurrent programming is not sequential and it is
 easy to get into the situation where you're skipping important exceptions,
 having zombie tasks (memory leakage) or never awaiting them.
 
+These problems lead to creation of the dedicated design paradigm - structured
+concurrency.
+
+Key Concepts in structured concurrency:
+Structured concurrency requires that concurrent tasks are organized in such a
+way that their lifetimes are bound to well-scoped blocks of code
+
+When a task spawns subtasks, these subtasks are treated as a group —
+the parent waits for all subtasks to complete before proceeding, improving
+reliability and error management.
+
+Error handling and cancellation are streamlined: if a child task fails,
+errors are automatically surfaced and the parent scope can react appropriately.
+
+This model is influenced by structured programming, as it brings discipline to
+concurrency in the same way that control constructs like if or for structure
+sequential programs.
 """
 import asyncio
 
@@ -56,7 +73,7 @@ async def test_parent_task_cancellation_exception_not_raised():
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0)
+    await asyncio.sleep(1)
     await parent_task
 
 
@@ -72,12 +89,13 @@ async def test_parent_task_cancelled_childs_are_running():
             )
             for _ in range(10)
         ]
+        await asyncio.sleep(5)
 
     parent_task = asyncio.create_task(
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0)
+    await asyncio.sleep(1)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task
@@ -85,6 +103,23 @@ async def test_parent_task_cancelled_childs_are_running():
     assert len(all_tasks) == 11
     for t in filter(lambda t: t.get_name().startswith("child_"), all_tasks):
         assert t.done() is False
+
+
+async def test_gather_one_failure_does_not_cancel_siblings() -> None:
+    async def success_task() -> None:
+        await asyncio.sleep(5)
+
+    async def fail_task() -> None:
+        raise ValueError("Oops")
+
+    task_1 = asyncio.create_task(success_task())
+    task_2 = asyncio.create_task(fail_task())
+
+    with suppress(ValueError):
+        await asyncio.gather(task_1, task_2)
+
+    assert task_2.done()
+    assert not task_1.done()
 
 
 # SOLUTION 1: Manual handling asyncio.CancelledError in each child tasks
@@ -108,7 +143,7 @@ async def test_how_to_handle_tasks_cancellation_solution_1():
             for _ in range(10)
         ]
         try:
-            await asyncio.sleep(10)
+            await asyncio.sleep(5)
         finally:
             for child_ in children:
                 child_.cancel()
@@ -119,8 +154,7 @@ async def test_how_to_handle_tasks_cancellation_solution_1():
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0)
-    asyncio.print_call_graph(parent_task)
+    await asyncio.sleep(1)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task
@@ -156,14 +190,14 @@ async def test_how_to_handle_tasks_cancellation_solution_2():
             )
             for _ in range(10)
         ]
+        await asyncio.sleep(0)
         await asyncio.gather(*children)
 
     parent_task = asyncio.create_task(
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0)
-    asyncio.print_call_graph(parent_task)
+    await asyncio.sleep(1)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task
@@ -186,6 +220,7 @@ async def test_how_to_handle_tasks_cancellation_solution_3():
     - Exception group is used for exception reporting
     - Special support of SIGTERM and SystemExit
     """
+
     async def child():
         # raise ValueError()
         try:
@@ -207,8 +242,7 @@ async def test_how_to_handle_tasks_cancellation_solution_3():
         parent(),
         name="parent",
     )
-    await asyncio.sleep(0)
-    asyncio.print_call_graph(parent_task)
+    await asyncio.sleep(1)
     parent_task.cancel()
     with suppress(asyncio.CancelledError):
         await parent_task
